@@ -1,1 +1,1 @@
-# TimCoRetailManager
+# TimCo Retail Manager
