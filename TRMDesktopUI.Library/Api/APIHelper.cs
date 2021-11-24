@@ -95,5 +95,10 @@ namespace TRMDesktopUI.Library.Api
                 }
             }
         }
+
+        public void LogOutUser()
+        {
+            _apiClient.DefaultRequestHeaders.Clear();
+        }
     }
 }
