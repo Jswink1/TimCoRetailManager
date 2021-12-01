@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,17 @@ namespace TRMApi.Controllers
     [Authorize]
     public class SaleController : ControllerBase
     {
+        private readonly IConfiguration _config;
+
+        public SaleController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [Authorize(Roles = "Cashier")]
         public void Post(SaleModel sale)
         {
-            SaleData data = new SaleData();
+            SaleData data = new SaleData(_config);
 
             // .Net Framework method of retrieving UserId
             //string userId = RequestContext.Principal.Identity.GetUserId();
@@ -33,7 +41,7 @@ namespace TRMApi.Controllers
         [Route("GetSalesReport")]
         public List<SaleReportModel> GetSalesReport()
         {
-            SaleData data = new SaleData();
+            SaleData data = new SaleData(_config);
             return data.GetSaleReport();
         }
     }

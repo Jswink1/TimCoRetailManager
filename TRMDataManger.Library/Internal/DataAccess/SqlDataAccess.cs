@@ -7,14 +7,25 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Data;
 using Dapper;
+using Microsoft.Extensions.Configuration;
 
 namespace TRMDataManger.Library.Internal.DataAccess
 {
     internal class SqlDataAccess : IDisposable
-    {        
+    {
+        private readonly IConfiguration _config;
+
+        public SqlDataAccess(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public string GetConnectionString(string name)
         {
-            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            return _config.GetConnectionString(name);
+
+            // .Net Framework Method
+            //return ConfigurationManager.ConnectionStrings[name].ConnectionString;
         }
 
         public List<T> LoadData<T, U>(string storedProcedure, U parameters, string connectionStringName)
@@ -40,6 +51,8 @@ namespace TRMDataManger.Library.Internal.DataAccess
                     commandType: CommandType.StoredProcedure);
             }
         }
+
+        // SQL Transaction
 
         private IDbConnection _connection;
         private IDbTransaction _transaction;
@@ -70,7 +83,7 @@ namespace TRMDataManger.Library.Internal.DataAccess
                     commandType: CommandType.StoredProcedure, transaction: _transaction);
         }
 
-        private bool isClosed = false;
+        private bool isClosed = false;        
 
         public void CommitTransaction()
         {
