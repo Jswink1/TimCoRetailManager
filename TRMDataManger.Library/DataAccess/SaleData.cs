@@ -19,6 +19,7 @@ namespace TRMDataManger.Library.DataAccess
 
             foreach (var item in saleInfo.SaleDetails)
             {
+                // Initialize a SaleDetailModel to insert into the DB
                 var detail = new SaleDetailDBModel
                 {
                     ProductId = item.ProductId,
@@ -33,8 +34,8 @@ namespace TRMDataManger.Library.DataAccess
                     throw new Exception($"The product Id of {detail.ProductId} could not be found in the database.");
                 }
 
+                // Calculate SaleDetail Total and Tax
                 detail.PurchasePrice = productInfo.RetailPrice * detail.Quantity;
-
                 if (productInfo.IsTaxable)
                 {
                     detail.Tax = detail.PurchasePrice * taxRate;
@@ -43,6 +44,7 @@ namespace TRMDataManger.Library.DataAccess
                 details.Add(detail);
             }
 
+            // Initialize a SaleModel to insert into the DB
             SaleDBModel sale = new SaleDBModel
             { 
                 SubTotal = details.Sum(x => x.PurchasePrice),
@@ -51,17 +53,21 @@ namespace TRMDataManger.Library.DataAccess
             };
             sale.Total = sale.SubTotal + sale.Tax;
 
+            // Use a SQL Transaction to insert the Sale and SaleDetails into the DB
             using (SqlDataAccess sql = new SqlDataAccess())
             {
                 try
                 {
                     sql.StartTransaction("TimCoRetailDB");
 
+                    // Insert the Sale
                     sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
 
+                    // Retrieve the ID of the inserted Sale
                     sale.Id = sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup",
                                                                       new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
 
+                    // Insert each SaleDetail of the Sale into the DB
                     foreach (var item in details)
                     {
                         item.SaleId = sale.Id;

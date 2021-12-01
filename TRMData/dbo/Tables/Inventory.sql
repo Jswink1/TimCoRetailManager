@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[Inventory]
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
-    [ProductId] INT NULL, 
-    [Quantity] INT NULL, 
-    [PurchasePrice] MONEY NULL, 
-    [PurchaseDate] DATETIME2 NULL DEFAULT getutcdate(), 
+    [ProductId] INT NOT NULL, 
+    [Quantity] INT NOT NULL, 
+    [PurchasePrice] MONEY NOT NULL, 
+    [PurchaseDate] DATETIME2 NOT NULL DEFAULT getutcdate(), 
     CONSTRAINT [FK_Inventory_ToProduct] FOREIGN KEY (ProductId) REFERENCES Product(Id)
 )

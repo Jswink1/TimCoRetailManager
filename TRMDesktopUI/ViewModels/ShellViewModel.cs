@@ -27,15 +27,21 @@ namespace TRMDesktopUI.ViewModels
             _salesVM = salesVM;
             _user = user;
             _apiHelper = apiHelper;
+
+            // Subscribe the ShellView to broadcasted events
             _events.SubscribeOnPublishedThread(this);
 
+            // Open the LoginView on startup
             ActivateItemAsync(IoC.Get<LoginViewModel>());
         }
 
-        public void ExitApplication()
+        public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
         {
-            TryCloseAsync();
-        }
+            // Open the SalesView when the LogOn Event is broadcasted
+            await ActivateItemAsync(_salesVM);
+            // Display the User Management menu item
+            NotifyOfPropertyChange(() => IsLoggedIn);
+        }        
 
         public bool IsLoggedIn
         {
@@ -52,6 +58,11 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
+        public void UserManagement()
+        {
+            ActivateItemAsync(IoC.Get<UserDisplayViewModel>());
+        }
+
         public void LogOut()
         {
             _user.ResetUserModel();
@@ -60,10 +71,9 @@ namespace TRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
 
-        public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
+        public void ExitApplication()
         {
-            await ActivateItemAsync(_salesVM);
-            NotifyOfPropertyChange(() => IsLoggedIn);
+            TryCloseAsync();
         }
     }
 }

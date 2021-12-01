@@ -101,16 +101,16 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        private async Task ResetSalesViewModel()
+        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
+
+        public BindingList<CartItemDisplayModel> Cart
         {
-            Cart = new BindingList<CartItemDisplayModel>();
-
-            await LoadProducts();
-
-            NotifyOfPropertyChange(() => SubTotal);
-            NotifyOfPropertyChange(() => Tax);
-            NotifyOfPropertyChange(() => Total);
-            NotifyOfPropertyChange(() => CanCheckOut);
+            get { return _cart; }
+            set
+            {
+                _cart = value;
+                NotifyOfPropertyChange(() => Cart);
+            }
         }
 
         private CartItemDisplayModel _selectedCartItem;
@@ -124,21 +124,7 @@ namespace TRMDesktopUI.ViewModels
                 NotifyOfPropertyChange(() => _selectedCartItem);
                 NotifyOfPropertyChange(() => CanRemoveFromCart);
             }
-        }
-
-
-
-        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
-
-        public BindingList<CartItemDisplayModel> Cart
-        {
-            get { return _cart; }
-            set
-            {
-                _cart = value;
-                NotifyOfPropertyChange(() => Cart);
-            }
-        }
+        }        
 
         private int _itemQuantity = 1;        
 
@@ -151,57 +137,7 @@ namespace TRMDesktopUI.ViewModels
                 NotifyOfPropertyChange(() => ItemQuantity);
                 NotifyOfPropertyChange(() => CanAddToCart);
             }
-        }
-
-        public string SubTotal
-        {
-            get
-            {
-                return CalculateSubTotal().ToString("C");
-            }
         }        
-
-        public string Tax
-        {
-            get
-            {                
-                return CalculateTax().ToString("C");
-            }
-        }
-
-        private decimal CalculateSubTotal()
-        {
-            decimal subTotal = 0;
-
-            foreach (var item in Cart)
-            {
-                subTotal += item.Product.RetailPrice * item.QuantityInCart;
-            }
-
-            return subTotal;
-        }
-
-        private decimal CalculateTax()
-        {
-            decimal taxAmount = 0;
-            decimal taxRate = _configHelper.GetTaxRate()/100;
-
-            // Calculate the total tax of the items who are Taxable
-            taxAmount = Cart.Where(x => x.Product.IsTaxable)
-                            .Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
-
-            return taxAmount;
-        }
-
-        public string Total
-        {
-            get
-            {
-                decimal total = CalculateSubTotal() + CalculateTax();
-                return total.ToString("C");
-            }
-        }
-
 
         public bool CanAddToCart
         {
@@ -311,6 +247,67 @@ namespace TRMDesktopUI.ViewModels
             await _saleEndpoint.PostSale(sale);
 
             await ResetSalesViewModel();
+        }
+
+        private async Task ResetSalesViewModel()
+        {
+            Cart = new BindingList<CartItemDisplayModel>();
+
+            await LoadProducts();
+
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
+        }
+
+        public string SubTotal
+        {
+            get
+            {
+                return CalculateSubTotal().ToString("C");
+            }
+        }
+
+        public string Tax
+        {
+            get
+            {
+                return CalculateTax().ToString("C");
+            }
+        }
+
+        private decimal CalculateSubTotal()
+        {
+            decimal subTotal = 0;
+
+            foreach (var item in Cart)
+            {
+                subTotal += item.Product.RetailPrice * item.QuantityInCart;
+            }
+
+            return subTotal;
+        }
+
+        private decimal CalculateTax()
+        {
+            decimal taxAmount = 0;
+            decimal taxRate = _configHelper.GetTaxRate() / 100;
+
+            // Calculate the total tax of the items who are Taxable
+            taxAmount = Cart.Where(x => x.Product.IsTaxable)
+                            .Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
+
+            return taxAmount;
+        }
+
+        public string Total
+        {
+            get
+            {
+                decimal total = CalculateSubTotal() + CalculateTax();
+                return total.ToString("C");
+            }
         }
     }
 }

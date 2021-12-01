@@ -24,6 +24,7 @@ namespace TRMDesktopUI
         {
             Initialize();
 
+            // Configure the Login PasswordBox to work properly with CaliburnMicro
             ConventionManager.AddElementConvention<PasswordBox>(
             PasswordBoxHelper.BoundPasswordProperty,
             "Password",
@@ -48,6 +49,7 @@ namespace TRMDesktopUI
 
             _container.Instance(_container)
                 .PerRequest<IProductEndpoint, ProductEndpoint>()
+                .PerRequest<IUserEndpoint, UserEndpoint>()
                 .PerRequest<ISaleEndpoint, SaleEndpoint>();
 
             _container

@@ -11,9 +11,7 @@ namespace TRMDataManager.App_Start
     {
         public void Apply(Operation operation, SchemaRegistry schemaRegistry, ApiDescription apiDescription)
         {
-            // Add a parameter to every operation
-
-            // Initialize the parameters if there is none so we can use it
+            // Initialize the parameters if there is none
             if (operation.parameters == null)
             {
                 operation.parameters = new List<Parameter>();

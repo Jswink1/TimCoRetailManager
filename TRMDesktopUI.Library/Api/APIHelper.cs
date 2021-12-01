@@ -33,7 +33,7 @@ namespace TRMDesktopUI.Library.Api
         {
             string api = ConfigurationManager.AppSettings["api"];
 
-            // Initialize Client with Address to API
+            // Initialize the Client with the API address
             _apiClient = new HttpClient();
             _apiClient.BaseAddress = new Uri(api);
 
@@ -45,7 +45,7 @@ namespace TRMDesktopUI.Library.Api
 
         public async Task<AuthenticatedUser> Authenticate(string username, string password)
         {
-            // Create the data to send to the API endpoint
+            // Create the authentication data to send to the API endpoint
             var data = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("grant_type", "password"),

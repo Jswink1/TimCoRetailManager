@@ -17,7 +17,7 @@ namespace TRMDataManager
             GlobalConfiguration.Configuration
                 .EnableSwagger(c =>
                     {
-                        // Add the Auth endpoint to log-in and get a token
+                        // Add the Auth endpoint to retrieve a user Auth Token
                         c.DocumentFilter<AuthTokenOperation>();
                         // Add Authorization Token parameters to every operation
                         c.OperationFilter<AuthorizationOperationFilter>();

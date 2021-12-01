@@ -11,10 +11,10 @@ namespace TRMDataManager.App_Start
     {
         public void Apply(SwaggerDocument swaggerDoc, SchemaRegistry schemaRegistry, IApiExplorer apiExplorer)
         {
-            // Add a new route in swagger for log-in
+            // Add a new route in swagger for Auth Token
             swaggerDoc.paths.Add("/token", new PathItem
             {
-                // Post command for the path
+                // Define post command for the path
                 post = new Operation
                 {
                     // Place route into the Auth category

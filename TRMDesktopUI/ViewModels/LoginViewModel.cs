@@ -49,14 +49,14 @@ namespace TRMDesktopUI.ViewModels
         {
             get 
             {
-                bool output = false;
+                bool displayErrorMessage = false;
 
                 if (ErrorMessage?.Length > 0)
                 {
-                    output = true;
+                    displayErrorMessage = true;
                 }
 
-                return output;
+                return displayErrorMessage;
             }
         }
 
@@ -77,14 +77,14 @@ namespace TRMDesktopUI.ViewModels
         {
             get
             {
-                bool output = false;
+                bool enableLogInButton = false;
 
                 if (UserName?.Length > 0 && Password?.Length > 0)
                 {
-                    output = true;
+                    enableLogInButton = true;
                 }
 
-                return output;
+                return enableLogInButton;
             }
         }
 
