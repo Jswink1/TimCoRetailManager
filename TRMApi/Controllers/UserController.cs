@@ -93,7 +93,7 @@ namespace TRMApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("Admin/AddRole")]
-        public async void AddARole(UserRolePairModel pairing)
+        public async Task AddARole(UserRolePairModel pairing)
         {
             var user = await _userManager.FindByIdAsync(pairing.UserId);
             await _userManager.AddToRoleAsync(user, pairing.RoleName);
@@ -102,7 +102,7 @@ namespace TRMApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("Admin/RemoveRole")]
-        public async void RemoveARole(UserRolePairModel pairing)
+        public async Task RemoveARole(UserRolePairModel pairing)
         {
             var user = await _userManager.FindByIdAsync(pairing.UserId);
             await _userManager.RemoveFromRoleAsync(user, pairing.RoleName);
