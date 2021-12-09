@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRMDataManager", "TRMDataManager\TRMDataManager.csproj", "{E028C22B-CA7B-47F1-9CBD-7FEA827B1BFF}"
-EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TRMData", "TRMData\TRMData.sqlproj", "{8F465DD3-1A60-41B5-94C2-F8313B3614FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRMDesktopUI", "TRMDesktopUI\TRMDesktopUI.csproj", "{B12B8FD7-F64A-49ED-930A-6E6448798D73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRMDesktopUI", "TRMDesktopUI\TRMDesktopUI.csproj", "{B12B8FD7-F64A-49ED-930A-6E6448798D73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRMDataManger.Library", "TRMDataManger.Library\TRMDataManger.Library.csproj", "{689D7CE1-AC33-4111-A58B-28627DD4540B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRMDataManger.Library", "TRMDataManger.Library\TRMDataManger.Library.csproj", "{689D7CE1-AC33-4111-A58B-28627DD4540B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRMDesktopUI.Library", "TRMDesktopUI.Library\TRMDesktopUI.Library.csproj", "{26868700-5A9C-4793-B400-44B656D3E8FF}"
 EndProject
@@ -19,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{EC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{059D7E3F-8BBE-4366-B6B4-B213040D6DA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRMApi", "TRMApi\TRMApi.csproj", "{D8EB4E7C-759F-4E94-98CB-3D5B068487C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRMApi", "TRMApi\TRMApi.csproj", "{D8EB4E7C-759F-4E94-98CB-3D5B068487C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E028C22B-CA7B-47F1-9CBD-7FEA827B1BFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E028C22B-CA7B-47F1-9CBD-7FEA827B1BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E028C22B-CA7B-47F1-9CBD-7FEA827B1BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E028C22B-CA7B-47F1-9CBD-7FEA827B1BFF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8F465DD3-1A60-41B5-94C2-F8313B3614FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F465DD3-1A60-41B5-94C2-F8313B3614FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F465DD3-1A60-41B5-94C2-F8313B3614FE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
@@ -58,7 +52,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E028C22B-CA7B-47F1-9CBD-7FEA827B1BFF} = {D3074FA0-C45C-4CF1-8367-D7C0F12CFAEE}
 		{8F465DD3-1A60-41B5-94C2-F8313B3614FE} = {ECB13E7C-E4FD-4F3D-A8A9-92BBEC9185F3}
 		{B12B8FD7-F64A-49ED-930A-6E6448798D73} = {059D7E3F-8BBE-4366-B6B4-B213040D6DA6}
 		{689D7CE1-AC33-4111-A58B-28627DD4540B} = {D3074FA0-C45C-4CF1-8367-D7C0F12CFAEE}
