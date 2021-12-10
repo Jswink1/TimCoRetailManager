@@ -15,6 +15,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TRMApi.Data;
+using TRMDataManger.Library.DataAccess;
+using TRMDataManger.Library.Internal.DataAccess;
 
 namespace TRMApi
 {
@@ -67,6 +69,12 @@ namespace TRMApi
                     ClockSkew = TimeSpan.FromMinutes(5)
                 };
             });
+
+            services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+            services.AddTransient<IInventoryData, InventoryData>();
+            services.AddTransient<IProductData, ProductData>();
+            services.AddTransient<ISaleData, SaleData>();
+            services.AddTransient<IUserData, UserData>();
 
             services.AddSwaggerGen(setup =>
             {

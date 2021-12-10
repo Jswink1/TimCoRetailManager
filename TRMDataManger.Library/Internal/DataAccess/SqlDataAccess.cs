@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace TRMDataManger.Library.Internal.DataAccess
 {
-    internal class SqlDataAccess : IDisposable
+    public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
         private readonly IConfiguration _config;
 
@@ -83,7 +83,7 @@ namespace TRMDataManger.Library.Internal.DataAccess
                     commandType: CommandType.StoredProcedure, transaction: _transaction);
         }
 
-        private bool isClosed = false;        
+        private bool isClosed = false;
 
         public void CommitTransaction()
         {

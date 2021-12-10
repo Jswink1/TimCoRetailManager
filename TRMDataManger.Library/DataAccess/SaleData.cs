@@ -10,20 +10,21 @@ using TRMDataManger.Library.Models;
 
 namespace TRMDataManger.Library.DataAccess
 {
-    public class SaleData
+    public class SaleData : ISaleData
     {
-        private readonly IConfiguration _config;
+        private readonly IProductData _productData;
+        private readonly ISqlDataAccess _sql;
 
-        public SaleData(IConfiguration config)
+        public SaleData(IProductData productData, ISqlDataAccess sql)
         {
-            _config = config;
+            _productData = productData;
+            _sql = sql;
         }
 
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
-            ProductData products = new ProductData(_config);
-            var taxRate = ConfigHelper.GetTaxRate()/100;
+            var taxRate = ConfigHelper.GetTaxRate() / 100;
 
             foreach (var item in saleInfo.SaleDetails)
             {
@@ -35,7 +36,7 @@ namespace TRMDataManger.Library.DataAccess
                 };
 
                 // Load product information
-                var productInfo = products.GetProductById(detail.ProductId);
+                var productInfo = _productData.GetProductById(detail.ProductId);
 
                 if (productInfo == null)
                 {
@@ -54,7 +55,7 @@ namespace TRMDataManger.Library.DataAccess
 
             // Initialize a SaleModel to insert into the DB
             SaleDBModel sale = new SaleDBModel
-            { 
+            {
                 SubTotal = details.Sum(x => x.PurchasePrice),
                 Tax = details.Sum(x => x.Tax),
                 CashierId = cashierId
@@ -62,43 +63,38 @@ namespace TRMDataManger.Library.DataAccess
             sale.Total = sale.SubTotal + sale.Tax;
 
             // Use a SQL Transaction to insert the Sale and SaleDetails into the DB
-            using (SqlDataAccess sql = new SqlDataAccess(_config))
+            try
             {
-                try
+                _sql.StartTransaction("TimCoRetailDB");
+
+                // Insert the Sale
+                _sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
+
+                // Retrieve the ID of the inserted Sale
+                sale.Id = _sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup",
+                                                                    new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
+
+                // Insert each SaleDetail of the Sale into the DB
+                foreach (var item in details)
                 {
-                    sql.StartTransaction("TimCoRetailDB");
+                    item.SaleId = sale.Id;
 
-                    // Insert the Sale
-                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
-
-                    // Retrieve the ID of the inserted Sale
-                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup",
-                                                                      new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
-
-                    // Insert each SaleDetail of the Sale into the DB
-                    foreach (var item in details)
-                    {
-                        item.SaleId = sale.Id;
-
-                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert",
-                                                  item);
-                    }
-
-                    sql.CommitTransaction();
+                    _sql.SaveDataInTransaction("dbo.spSaleDetail_Insert",
+                                                item);
                 }
-                catch
-                {
-                    sql.RollbackTransaction();
-                    throw;
-                }
-            }            
+
+                _sql.CommitTransaction();
+            }
+            catch
+            {
+                _sql.RollbackTransaction();
+                throw;
+            }
         }
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "TimCoRetailDB");
+            var output = _sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "TimCoRetailDB");
 
             return output;
         }
