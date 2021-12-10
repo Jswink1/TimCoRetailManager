@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +25,17 @@ namespace TRMApi.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserData _userData;
+        private readonly ILogger<UserController> _logger;
 
         public UserController(ApplicationDbContext context, 
                               UserManager<IdentityUser> userManager, 
-                              IUserData userData)
+                              IUserData userData,
+                              ILogger<UserController> logger)
         {
             _context = context;
             _userManager = userManager;
             _userData = userData;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -96,8 +100,18 @@ namespace TRMApi.Controllers
         [Route("Admin/AddRole")]
         public async Task AddARole(UserRolePairModel pairing)
         {
-            var user = await _userManager.FindByIdAsync(pairing.UserId);
-            await _userManager.AddToRoleAsync(user, pairing.RoleName);
+            // Get the ID of the currently logged in user
+            string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Get the Id of the user whose role is being changed
+            var userToChangeRole = await _userManager.FindByIdAsync(pairing.UserId);
+
+            _logger.LogInformation("Admin {Admin} added user {User} to role {Role}",
+                                   currentUserId,
+                                   userToChangeRole.Id,
+                                   pairing.RoleName);
+
+            await _userManager.AddToRoleAsync(userToChangeRole, pairing.RoleName);
         }
 
         [Authorize(Roles = "Admin")]
@@ -105,8 +119,18 @@ namespace TRMApi.Controllers
         [Route("Admin/RemoveRole")]
         public async Task RemoveARole(UserRolePairModel pairing)
         {
-            var user = await _userManager.FindByIdAsync(pairing.UserId);
-            await _userManager.RemoveFromRoleAsync(user, pairing.RoleName);
+            // Get the ID of the currently logged in user
+            string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Get the Id of the user whose role is being changed
+            var userToChangeRole = await _userManager.FindByIdAsync(pairing.UserId);
+
+            _logger.LogInformation("Admin {Admin} removed user {User} from role {Role}",
+                                   currentUserId,
+                                   userToChangeRole.Id,
+                                   pairing.RoleName);
+
+            await _userManager.RemoveFromRoleAsync(userToChangeRole, pairing.RoleName);
         }
     }
 }
